@@ -121,7 +121,7 @@
           </div>
         </div>
 
-        <div class="detail-section">
+        <div v-if="selectedOrder.status === 'PENDING' || selectedOrder.status === 'ENTERED'" class="detail-section">
           <h4>二维码</h4>
           <div class="qrcode-box">{{ selectedOrder.qrCode }}</div>
         </div>

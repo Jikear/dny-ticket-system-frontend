@@ -17,10 +17,22 @@ export function toggleUserStatus(id: number) {
   return request.put<any, { code: number; message: string; data: User }>(`/api/admin/users/${id}/toggle-status`)
 }
 
-export function createStaffUser(username: string, password: string, nickname?: string, role?: string) {
-  const params: Record<string, string> = { username, password }
-  if (nickname) params.nickname = nickname
-  if (role) params.role = role
+export interface CreateStaffRequest {
+  username: string
+  password: string
+  nickname?: string
+  role?: string
+}
+
+export function createStaffUser(data: CreateStaffRequest) {
+  // Send as query params as per API spec (POST /api/admin/users/staff?username=...&password=...)
+  // Note: The API spec requires query params, but ideally should use request body for security
+  const params: Record<string, string> = { 
+    username: data.username, 
+    password: data.password 
+  }
+  if (data.nickname) params.nickname = data.nickname
+  if (data.role) params.role = data.role
   return request.post<any, { code: number; message: string; data: User }>(
     '/api/admin/users/staff',
     null,

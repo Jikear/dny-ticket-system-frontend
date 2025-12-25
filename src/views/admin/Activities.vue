@@ -24,10 +24,10 @@
             <td>{{ activity.name }}</td>
             <td>{{ activity.location || '-' }}</td>
             <td>
-              {{ activity.dailyStartTime ? `${activity.dailyStartTime.substring(0, 5)} - ${activity.dailyEndTime?.substring(0, 5)}` : '-' }}
+              {{ activity.dailyStartTime && activity.dailyEndTime ? `${activity.dailyStartTime.substring(0, 5)} - ${activity.dailyEndTime.substring(0, 5)}` : '-' }}
             </td>
             <td>
-              {{ activity.startDate ? `${activity.startDate} ~ ${activity.endDate}` : '-' }}
+              {{ activity.startDate && activity.endDate ? `${activity.startDate} ~ ${activity.endDate}` : '-' }}
             </td>
             <td>
               <span :class="['status-badge', activity.status === 1 ? 'active' : 'inactive']">

@@ -240,12 +240,12 @@ const handleCreate = async () => {
   createError.value = ''
   
   try {
-    await createStaffUser(
-      createForm.username,
-      createForm.password,
-      createForm.nickname || undefined,
-      createForm.role
-    )
+    await createStaffUser({
+      username: createForm.username,
+      password: createForm.password,
+      nickname: createForm.nickname || undefined,
+      role: createForm.role
+    })
     closeCreateModal()
     loadUsers(currentPage.value)
   } catch (e: any) {
