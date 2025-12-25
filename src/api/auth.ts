@@ -33,7 +33,3 @@ export function loginApi(data: LoginRequest) {
 export function registerApi(data: RegisterRequest) {
   return request.post('/api/auth/register', data)
 }
-
-export function getMeApi() {
-  return request.get('/api/auth/me')
-}
