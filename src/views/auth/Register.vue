@@ -196,7 +196,7 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
 const passwordMismatch = computed(() => {
-  return confirmPassword.value.length > 0 && form.password !== confirmPassword.value
+  return form.password.length > 0 && confirmPassword.value.length > 0 && form.password !== confirmPassword.value
 })
 
 const handleRegister = async () => {
