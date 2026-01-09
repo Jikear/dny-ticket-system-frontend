@@ -25,7 +25,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" :style="heroStyle">
       <div class="hero-content">
         <h2>欢迎来到{{ parkInfo?.name || '滇南大观园' }}</h2>
         <p>{{ parkInfo?.description || '体验云南民族文化的魅力' }}</p>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { getParkInfo, getCurrentActivities } from '@/api/park'
@@ -126,6 +126,17 @@ const parkInfo = ref<ParkInfo | null>(null)
 const activities = ref<Activity[]>([])
 const ticketTypes = ref<TicketType[]>([])
 const announcements = ref<Announcement[]>([])
+
+const heroStyle = computed(() => {
+  if (parkInfo.value?.logoUrl) {
+    return {
+      backgroundImage: `linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url(${parkInfo.value.logoUrl})`
+    }
+  }
+  return {
+    backgroundImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+  }
+})
 
 const loadData = async () => {
   try {
@@ -223,6 +234,8 @@ onMounted(() => {
 
 .hero {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: cover;
+  background-position: center;
   color: #fff;
   padding: 80px 20px;
   text-align: center;
