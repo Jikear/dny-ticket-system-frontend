@@ -25,7 +25,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" :style="heroStyle">
       <div class="hero-content">
         <h2>欢迎来到{{ parkInfo?.name || '滇南大观园' }}</h2>
         <p>{{ parkInfo?.description || '体验云南民族文化的魅力' }}</p>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { getParkInfo, getCurrentActivities } from '@/api/park'
@@ -126,6 +126,43 @@ const parkInfo = ref<ParkInfo | null>(null)
 const activities = ref<Activity[]>([])
 const ticketTypes = ref<TicketType[]>([])
 const announcements = ref<Announcement[]>([])
+
+const heroStyle = computed(() => {
+  const gradientOverlay = 'linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7))'
+  
+  if (parkInfo.value?.logoUrl) {
+    const urlString = parkInfo.value.logoUrl
+    
+    // Validate URL format
+    try {
+      // For http/https URLs, validate using URL constructor
+      if (urlString.startsWith('http://') || urlString.startsWith('https://')) {
+        const url = new URL(urlString)
+        // Only allow http and https protocols
+        if (url.protocol === 'http:' || url.protocol === 'https:') {
+          return {
+            backgroundImage: `${gradientOverlay}, url("${urlString}")`
+          }
+        }
+      }
+      // For data URIs, check basic format
+      else if (urlString.startsWith('data:image/')) {
+        // Basic validation for data URI
+        if (urlString.match(/^data:image\/(png|jpeg|jpg|gif|webp);base64,/)) {
+          return {
+            backgroundImage: `${gradientOverlay}, url("${urlString}")`
+          }
+        }
+      }
+    } catch (e) {
+      // Invalid URL, fall back to default gradient
+      console.warn('Invalid logoUrl:', urlString)
+    }
+  }
+  return {
+    backgroundImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+  }
+})
 
 const loadData = async () => {
   try {
@@ -223,6 +260,8 @@ onMounted(() => {
 
 .hero {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: cover;
+  background-position: center;
   color: #fff;
   padding: 80px 20px;
   text-align: center;
