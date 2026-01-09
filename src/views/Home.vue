@@ -129,13 +129,32 @@ const announcements = ref<Announcement[]>([])
 
 const heroStyle = computed(() => {
   if (parkInfo.value?.logoUrl) {
-    // Validate that logoUrl is a safe URL format
-    const url = parkInfo.value.logoUrl
-    // Check if it's a valid URL format (http/https or data URI for base64 images)
-    if (url.match(/^(https?:\/\/|data:image\/)/)) {
-      return {
-        backgroundImage: `linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url(${url})`
+    const urlString = parkInfo.value.logoUrl
+    
+    // Validate URL format
+    try {
+      // For http/https URLs, validate using URL constructor
+      if (urlString.startsWith('http://') || urlString.startsWith('https://')) {
+        const url = new URL(urlString)
+        // Only allow http and https protocols
+        if (url.protocol === 'http:' || url.protocol === 'https:') {
+          return {
+            backgroundImage: `linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url("${urlString}")`
+          }
+        }
       }
+      // For data URIs, check basic format
+      else if (urlString.startsWith('data:image/')) {
+        // Basic validation for data URI
+        if (urlString.match(/^data:image\/(png|jpeg|jpg|gif|webp);base64,/)) {
+          return {
+            backgroundImage: `linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url("${urlString}")`
+          }
+        }
+      }
+    } catch (e) {
+      // Invalid URL, fall back to default gradient
+      console.warn('Invalid logoUrl:', urlString)
     }
   }
   return {
