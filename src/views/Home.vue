@@ -129,8 +129,13 @@ const announcements = ref<Announcement[]>([])
 
 const heroStyle = computed(() => {
   if (parkInfo.value?.logoUrl) {
-    return {
-      backgroundImage: `linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url(${parkInfo.value.logoUrl})`
+    // Validate that logoUrl is a safe URL format
+    const url = parkInfo.value.logoUrl
+    // Check if it's a valid URL format (http/https or data URI for base64 images)
+    if (url.match(/^(https?:\/\/|data:image\/)/)) {
+      return {
+        backgroundImage: `linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url(${url})`
+      }
     }
   }
   return {
