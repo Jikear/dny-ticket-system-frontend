@@ -221,3 +221,8 @@ export interface OperationLog {
   ipAddress: string
   operationTime: string
 }
+
+// Upload types
+export interface UploadResponse {
+  url: string
+}

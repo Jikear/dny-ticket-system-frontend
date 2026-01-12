@@ -57,8 +57,26 @@
             <textarea v-model="form.description" rows="3"></textarea>
           </div>
           <div class="form-field">
-            <label>封面图 URL</label>
-            <input type="url" v-model="form.imageUrl" placeholder="https://" />
+            <label>封面图</label>
+            <div class="image-upload">
+              <input
+                type="file"
+                ref="imageFileInput"
+                accept="image/jpeg,image/png,image/gif"
+                @change="handleImageFileChange"
+                style="display: none"
+              />
+              <div class="upload-preview" v-if="form.imageUrl">
+                <img :src="form.imageUrl" alt="封面图预览" class="preview-image" />
+              </div>
+              <div class="upload-actions">
+                <button type="button" @click="triggerImageUpload" class="btn-upload" :disabled="uploading">
+                  {{ uploading ? '上传中...' : '上传图片' }}
+                </button>
+                <span class="upload-hint">支持 jpg/png/gif，最大10MB</span>
+              </div>
+              <input type="url" v-model="form.imageUrl" placeholder="或输入图片URL" class="url-input" />
+            </div>
           </div>
           <div class="form-field">
             <label>地点</label>
@@ -107,14 +125,17 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { getAdminActivities, createActivity, updateActivity, deleteActivity } from '@/api/park'
+import { uploadImage } from '@/api/upload'
 import type { Activity } from '@/types'
 
 const activities = ref<Activity[]>([])
 const loading = ref(true)
 const showModal = ref(false)
 const submitting = ref(false)
+const uploading = ref(false)
 const error = ref('')
 const editingActivity = ref<Activity | null>(null)
+const imageFileInput = ref<HTMLInputElement | null>(null)
 
 const form = reactive({
   name: '',
@@ -127,6 +148,42 @@ const form = reactive({
   dailyEndTime: '',
   status: 1
 })
+
+const triggerImageUpload = () => {
+  imageFileInput.value?.click()
+}
+
+const handleImageFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+
+  // Validate file type
+  if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
+    error.value = '只能上传图片文件（jpg/png/gif）'
+    return
+  }
+
+  // Validate file size (10MB max)
+  if (file.size > 10 * 1024 * 1024) {
+    error.value = '图片大小不能超过10MB'
+    return
+  }
+
+  uploading.value = true
+  error.value = ''
+
+  try {
+    const res = await uploadImage(file)
+    form.imageUrl = res.data.url
+  } catch (e: any) {
+    error.value = e?.message || '上传失败'
+  } finally {
+    uploading.value = false
+    // Reset file input
+    if (target) target.value = ''
+  }
+}
 
 const loadActivities = async () => {
   loading.value = true
@@ -368,6 +425,70 @@ onMounted(() => {
 
 .modal-actions .btn-primary {
   flex: 1;
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upload-preview {
+  width: 200px;
+  height: 150px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-upload {
+  padding: 8px 16px;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-upload:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.upload-hint {
+  color: #999;
+  font-size: 12px;
+}
+
+.url-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.url-input:focus {
+  outline: none;
+  border-color: #667eea;
 }
 
 .error-msg {
