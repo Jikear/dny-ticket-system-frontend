@@ -9,8 +9,26 @@
         </div>
 
         <div class="form-field">
-          <label>Logo URL</label>
-          <input type="url" v-model="form.logoUrl" placeholder="https://" />
+          <label>Logo</label>
+          <div class="image-upload">
+            <input
+              type="file"
+              ref="logoFileInput"
+              accept="image/jpeg,image/png,image/gif"
+              @change="handleLogoFileChange"
+              style="display: none"
+            />
+            <div class="upload-preview" v-if="form.logoUrl">
+              <img :src="form.logoUrl" alt="Logo预览" class="preview-image" />
+            </div>
+            <div class="upload-actions">
+              <button type="button" @click="triggerLogoUpload" class="btn-upload" :disabled="uploading">
+                {{ uploading ? '上传中...' : '上传图片' }}
+              </button>
+              <span class="upload-hint">支持 jpg/png/gif，最大10MB</span>
+            </div>
+            <input type="url" v-model="form.logoUrl" placeholder="或输入图片URL" class="url-input" />
+          </div>
         </div>
 
         <div class="form-field">
@@ -55,11 +73,14 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { getAdminParkInfo, updateParkInfo } from '@/api/park'
+import { uploadImage } from '@/api/upload'
 
 const loading = ref(true)
 const saving = ref(false)
+const uploading = ref(false)
 const success = ref('')
 const error = ref('')
+const logoFileInput = ref<HTMLInputElement | null>(null)
 
 const form = reactive({
   name: '',
@@ -70,6 +91,42 @@ const form = reactive({
   address: '',
   notice: ''
 })
+
+const triggerLogoUpload = () => {
+  logoFileInput.value?.click()
+}
+
+const handleLogoFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+
+  // Validate file type
+  if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
+    error.value = '只能上传图片文件（jpg/png/gif）'
+    return
+  }
+
+  // Validate file size (10MB max)
+  if (file.size > 10 * 1024 * 1024) {
+    error.value = '图片大小不能超过10MB'
+    return
+  }
+
+  uploading.value = true
+  error.value = ''
+
+  try {
+    const res = await uploadImage(file)
+    form.logoUrl = res.data.url
+  } catch (e: any) {
+    error.value = e?.message || '上传失败'
+  } finally {
+    uploading.value = false
+    // Reset file input
+    if (target) target.value = ''
+  }
+}
 
 const loadParkInfo = async () => {
   try {
@@ -189,6 +246,70 @@ onMounted(() => {
 .btn-primary:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upload-preview {
+  width: 200px;
+  height: 150px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-upload {
+  padding: 8px 16px;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-upload:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.upload-hint {
+  color: #999;
+  font-size: 12px;
+}
+
+.url-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.url-input:focus {
+  outline: none;
+  border-color: #667eea;
 }
 
 .success-msg {
