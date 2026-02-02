@@ -106,7 +106,7 @@ onMounted(async () => {
 }
 
 .back-link {
-  color: #667eea;
+  color: #10b981;
   text-decoration: none;
   font-size: 14px;
 }

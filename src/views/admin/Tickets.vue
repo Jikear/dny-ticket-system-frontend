@@ -203,7 +203,7 @@ onMounted(() => {
 
 .btn-primary {
   padding: 10px 20px;
-  background: #667eea;
+  background: #10b981;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -255,7 +255,7 @@ onMounted(() => {
 .btn-link {
   background: none;
   border: none;
-  color: #667eea;
+  color: #10b981;
   cursor: pointer;
   margin-right: 8px;
   padding: 4px 8px;

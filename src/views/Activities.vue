@@ -10,7 +10,7 @@
       <div v-else-if="activities.length === 0" class="empty">暂无活动</div>
       <div v-else class="activity-grid">
         <div v-for="activity in activities" :key="activity.id" class="activity-card" @click="viewDetail(activity.id)">
-          <div class="activity-image" :style="{ backgroundImage: activity.imageUrl ? `url(${activity.imageUrl})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }">
+          <div class="activity-image" :style="{ backgroundImage: activity.imageUrl ? `url(${activity.imageUrl})` : 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)' }">
             <span v-if="activity.status === 1" class="status-badge active">进行中</span>
             <span v-else class="status-badge inactive">已结束</span>
           </div>
@@ -33,7 +33,7 @@
     <div v-if="selectedActivity" class="modal-overlay" @click.self="closeDetail">
       <div class="modal-content">
         <button class="modal-close" @click="closeDetail">×</button>
-        <div class="modal-image" :style="{ backgroundImage: selectedActivity.imageUrl ? `url(${selectedActivity.imageUrl})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }"></div>
+        <div class="modal-image" :style="{ backgroundImage: selectedActivity.imageUrl ? `url(${selectedActivity.imageUrl})` : 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)' }"></div>
         <div class="modal-info">
           <h2>{{ selectedActivity.name }}</h2>
           <div class="detail-item" v-if="selectedActivity.location">
@@ -109,7 +109,7 @@ onMounted(() => {
 }
 
 .back-link {
-  color: #667eea;
+  color: #10b981;
   text-decoration: none;
   font-size: 14px;
 }

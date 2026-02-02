@@ -297,7 +297,7 @@ onMounted(() => {
 }
 
 .back-link {
-  color: #667eea;
+  color: #10b981;
   text-decoration: none;
   font-size: 14px;
 }
@@ -327,11 +327,18 @@ onMounted(() => {
 
 .login-btn {
   display: inline-block;
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
   padding: 10px 24px;
-  border-radius: 4px;
+  border-radius: 8px;
   text-decoration: none;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .booking-form {
@@ -365,12 +372,12 @@ onMounted(() => {
 }
 
 .ticket-option:hover, .slot-option:hover {
-  border-color: #667eea;
+  border-color: #10b981;
 }
 
 .ticket-option.selected, .slot-option.selected {
-  border-color: #667eea;
-  background: #f0f3ff;
+  border-color: #10b981;
+  background: #ecfdf5;
 }
 
 .ticket-option input, .slot-option input {
@@ -410,7 +417,7 @@ onMounted(() => {
 
 .date-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #10b981;
 }
 
 .quantity-control {
@@ -468,7 +475,7 @@ onMounted(() => {
 
 .form-field input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #10b981;
 }
 
 .order-summary {
@@ -504,13 +511,20 @@ onMounted(() => {
 .submit-btn {
   width: 100%;
   padding: 14px;
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .submit-btn:disabled {
@@ -587,7 +601,7 @@ onMounted(() => {
 
 .order-no {
   font-family: monospace;
-  color: #667eea;
+  color: #10b981;
 }
 
 .qrcode-section {
@@ -616,11 +630,12 @@ onMounted(() => {
 .view-orders-btn {
   flex: 1;
   padding: 12px;
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
-  border-radius: 6px;
+  border-radius: 8px;
   text-decoration: none;
   text-align: center;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .close-btn {

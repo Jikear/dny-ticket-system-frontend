@@ -79,7 +79,7 @@
       <h3 class="section-title">精彩活动</h3>
       <div class="activity-grid">
         <div v-for="activity in activities.slice(0, 4)" :key="activity.id" class="activity-card">
-          <div class="activity-image" :style="{ backgroundImage: activity.imageUrl ? `url(${activity.imageUrl})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }"></div>
+          <div class="activity-image" :style="{ backgroundImage: activity.imageUrl ? `url(${activity.imageUrl})` : 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)' }"></div>
           <div class="activity-info">
             <h4>{{ activity.name }}</h4>
             <p v-if="activity.location">📍 {{ activity.location }}</p>
@@ -128,7 +128,7 @@ const ticketTypes = ref<TicketType[]>([])
 const announcements = ref<Announcement[]>([])
 
 const heroStyle = computed(() => {
-  const gradientOverlay = 'linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7))'
+  const gradientOverlay = 'linear-gradient(rgba(16, 185, 129, 0.7), rgba(6, 182, 212, 0.7))'
   
   if (parkInfo.value?.logoUrl) {
     const urlString = parkInfo.value.logoUrl
@@ -160,7 +160,7 @@ const heroStyle = computed(() => {
     }
   }
   return {
-    backgroundImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    backgroundImage: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)'
   }
 })
 
@@ -259,7 +259,7 @@ onMounted(() => {
 }
 
 .hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   background-size: cover;
   background-position: center;
   color: #fff;
@@ -270,6 +270,7 @@ onMounted(() => {
 .hero-content h2 {
   font-size: 36px;
   margin-bottom: 16px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .hero-content p {
@@ -281,16 +282,18 @@ onMounted(() => {
 .cta-btn {
   display: inline-block;
   background: #fff;
-  color: #667eea;
+  color: #10b981;
   padding: 12px 32px;
   border-radius: 24px;
   text-decoration: none;
   font-weight: 500;
-  transition: transform 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .cta-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .section {
@@ -315,9 +318,16 @@ onMounted(() => {
 .info-card {
   background: #fff;
   padding: 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  transform-style: preserve-3d;
+}
+
+.info-card:hover {
+  transform: translateY(-5px) rotateX(2deg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 .info-icon {
@@ -399,7 +409,7 @@ onMounted(() => {
 }
 
 .announcement-title:hover {
-  color: #667eea;
+  color: #10b981;
 }
 
 .announcement-time {
@@ -411,7 +421,7 @@ onMounted(() => {
   display: block;
   text-align: center;
   margin-top: 16px;
-  color: #667eea;
+  color: #10b981;
   text-decoration: none;
 }
 
@@ -423,9 +433,16 @@ onMounted(() => {
 
 .activity-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  transform-style: preserve-3d;
+}
+
+.activity-card:hover {
+  transform: translateY(-8px) rotateX(2deg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .activity-image {
@@ -458,9 +475,16 @@ onMounted(() => {
 .ticket-card {
   background: #fff;
   padding: 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  transform-style: preserve-3d;
+}
+
+.ticket-card:hover {
+  transform: translateY(-5px) rotateX(2deg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 .ticket-card h4 {
@@ -470,7 +494,7 @@ onMounted(() => {
 
 .ticket-price {
   font-size: 32px;
-  color: #e74c3c;
+  color: #f97316;
   font-weight: 700;
   margin-bottom: 8px;
 }
@@ -483,15 +507,22 @@ onMounted(() => {
 
 .ticket-btn {
   display: inline-block;
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
-  padding: 8px 24px;
-  border-radius: 4px;
+  padding: 10px 28px;
+  border-radius: 20px;
   text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.ticket-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .footer {
-  background: #1a1a2e;
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d3748 100%);
   color: #fff;
   text-align: center;
   padding: 24px;

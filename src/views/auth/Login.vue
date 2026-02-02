@@ -133,36 +133,56 @@ const handleLogin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   padding: 20px;
+  perspective: 1000px;
 }
 
 .login-card {
   width: 100%;
   max-width: 420px;
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   animation: slideUp 0.5s ease-out;
+  transform-style: preserve-3d;
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(30px) rotateX(-5deg);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) rotateX(0);
   }
 }
 
 .login-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
   padding: 40px 30px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20%, 20%); }
 }
 
 .logo-icon {
@@ -221,9 +241,9 @@ const handleLogin = async () => {
 
 .input-wrapper input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #10b981;
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
 }
 
 .input-wrapper input.has-value {
@@ -294,20 +314,21 @@ const handleLogin = async () => {
   font-size: 16px;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
 }
 
 .submit-btn:active:not(:disabled) {
@@ -346,14 +367,14 @@ const handleLogin = async () => {
 }
 
 .link {
-  color: #667eea;
+  color: #10b981;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .link:hover {
-  color: #764ba2;
+  color: #06b6d4;
   text-decoration: underline;
 }
 
@@ -366,7 +387,7 @@ const handleLogin = async () => {
 }
 
 .back-link:hover {
-  color: #667eea;
+  color: #10b981;
 }
 
 /* Responsive design */

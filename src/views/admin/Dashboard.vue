@@ -90,7 +90,7 @@ import type { Statistics, FlowWarning } from '@/types'
 const stats = ref<Statistics | null>(null)
 const flowWarning = ref<FlowWarning | null>(null)
 
-const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe']
+const colors = ['#10b981', '#06b6d4', '#f97316', '#ec4899', '#8b5cf6', '#14b8a6']
 
 const maxRegionValue = computed(() => {
   if (!stats.value?.regionStats?.length) return 1

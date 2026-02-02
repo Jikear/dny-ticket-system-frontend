@@ -116,7 +116,7 @@ onMounted(() => {
 
 .btn-primary {
   padding: 10px 20px;
-  background: #667eea;
+  background: #10b981;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -176,7 +176,7 @@ onMounted(() => {
 .method {
   display: inline-block;
   padding: 2px 6px;
-  background: #667eea;
+  background: #10b981;
   color: #fff;
   border-radius: 4px;
   font-size: 10px;
