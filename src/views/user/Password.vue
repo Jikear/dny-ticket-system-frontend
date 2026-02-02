@@ -114,7 +114,7 @@ const handleSubmit = async () => {
 }
 
 .back-link {
-  color: #667eea;
+  color: #10b981;
   text-decoration: none;
   font-size: 14px;
 }
@@ -154,7 +154,7 @@ const handleSubmit = async () => {
 }
 
 .menu-item.active {
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
 }
 
@@ -195,7 +195,7 @@ const handleSubmit = async () => {
 
 .form-field input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #10b981;
 }
 
 .form-actions {
@@ -205,12 +205,19 @@ const handleSubmit = async () => {
 .form-actions button {
   width: 100%;
   padding: 12px;
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.form-actions button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .form-actions button:disabled {

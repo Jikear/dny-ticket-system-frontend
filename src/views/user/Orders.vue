@@ -273,7 +273,7 @@ onMounted(() => {
 }
 
 .back-link {
-  color: #667eea;
+  color: #10b981;
   text-decoration: none;
   font-size: 14px;
 }
@@ -313,7 +313,7 @@ onMounted(() => {
 }
 
 .menu-item.active {
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
 }
 
@@ -455,7 +455,7 @@ onMounted(() => {
 }
 
 .btn-detail {
-  background: #667eea;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   color: #fff;
 }
 

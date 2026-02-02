@@ -222,7 +222,7 @@ onMounted(() => {
 .form-field input:focus,
 .form-field textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #10b981;
 }
 
 .form-field textarea {
@@ -235,7 +235,7 @@ onMounted(() => {
 
 .btn-primary {
   padding: 12px 32px;
-  background: #667eea;
+  background: #10b981;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -280,7 +280,7 @@ onMounted(() => {
 
 .btn-upload {
   padding: 8px 16px;
-  background: #667eea;
+  background: #10b981;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -309,7 +309,7 @@ onMounted(() => {
 
 .url-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #10b981;
 }
 
 .success-msg {
