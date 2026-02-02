@@ -128,8 +128,6 @@ const ticketTypes = ref<TicketType[]>([])
 const announcements = ref<Announcement[]>([])
 
 const heroStyle = computed(() => {
-  const gradientOverlay = 'linear-gradient(rgba(16, 185, 129, 0.7), rgba(6, 182, 212, 0.7))'
-  
   if (parkInfo.value?.logoUrl) {
     const urlString = parkInfo.value.logoUrl
     
@@ -141,7 +139,7 @@ const heroStyle = computed(() => {
         // Only allow http and https protocols
         if (url.protocol === 'http:' || url.protocol === 'https:') {
           return {
-            backgroundImage: `${gradientOverlay}, url("${urlString}")`
+            backgroundImage: `url("${urlString}")`
           }
         }
       }
@@ -150,7 +148,7 @@ const heroStyle = computed(() => {
         // Basic validation for data URI
         if (urlString.match(/^data:image\/(png|jpeg|jpg|gif|webp);base64,/)) {
           return {
-            backgroundImage: `${gradientOverlay}, url("${urlString}")`
+            backgroundImage: `url("${urlString}")`
           }
         }
       }
