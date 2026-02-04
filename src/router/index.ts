@@ -71,7 +71,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'users',
         name: 'AdminUsers',
-        component: () => import('../views/admin/Users.vue')
+        component: () => import('../views/admin/Users.vue'),
+        meta: { requiresAdminOnly: true }
       },
       {
         path: 'tickets',
@@ -106,7 +107,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'logs',
         name: 'AdminLogs',
-        component: () => import('../views/admin/Logs.vue')
+        component: () => import('../views/admin/Logs.vue'),
+        meta: { requiresAdminOnly: true }
       }
     ]
   }
@@ -124,8 +126,10 @@ router.beforeEach((to, _from, next) => {
   
   if (to.meta.requiresAuth && !token) {
     next({ name: 'Login' })
-  } else if (to.meta.requiresAdmin && role !== 'ADMIN') {
+  } else if (to.meta.requiresAdmin && !['ADMIN', 'STAFF'].includes(role || '')) {
     next({ name: 'Home' })
+  } else if (to.meta.requiresAdminOnly && role !== 'ADMIN') {
+    next({ name: 'AdminDashboard' })
   } else {
     next()
   }

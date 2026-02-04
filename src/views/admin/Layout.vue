@@ -9,7 +9,7 @@
           <span class="icon">📊</span>
           <span>数据统计</span>
         </router-link>
-        <router-link to="/admin/users" class="nav-item" active-class="active">
+        <router-link v-if="userStore.role === 'ADMIN'" to="/admin/users" class="nav-item" active-class="active">
           <span class="icon">👥</span>
           <span>用户管理</span>
         </router-link>
@@ -37,7 +37,7 @@
           <span class="icon">📢</span>
           <span>公告管理</span>
         </router-link>
-        <router-link to="/admin/logs" class="nav-item" active-class="active">
+        <router-link v-if="userStore.role === 'ADMIN'" to="/admin/logs" class="nav-item" active-class="active">
           <span class="icon">📝</span>
           <span>操作日志</span>
         </router-link>

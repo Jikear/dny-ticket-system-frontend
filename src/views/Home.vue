@@ -12,7 +12,7 @@
           <template v-if="userStore.username">
             <router-link to="/user/profile" class="nav-link">个人中心</router-link>
             <router-link to="/user/orders" class="nav-link">我的订单</router-link>
-            <router-link v-if="userStore.role === 'ADMIN'" to="/admin" class="nav-link admin-link">管理后台</router-link>
+            <router-link v-if="userStore.role && ['ADMIN', 'STAFF'].includes(userStore.role)" to="/admin" class="nav-link admin-link">管理后台</router-link>
             <span class="user-info">{{ userStore.username }}</span>
             <button @click="logout" class="logout-btn">退出</button>
           </template>
