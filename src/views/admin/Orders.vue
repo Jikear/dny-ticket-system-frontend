@@ -1,5 +1,28 @@
 <template>
   <div class="admin-page">
+    <!-- Search Form -->
+    <div class="search-section">
+      <div class="search-form">
+        <div class="form-item">
+          <label>用户名</label>
+          <input v-model="searchParams.username" type="text" placeholder="支持模糊查询" />
+        </div>
+        <div class="form-item">
+          <label>手机号</label>
+          <input v-model="searchParams.phone" type="text" placeholder="支持模糊查询" />
+        </div>
+        <div class="form-item">
+          <label>真实姓名</label>
+          <input v-model="searchParams.realName" type="text" placeholder="支持模糊查询" />
+        </div>
+        <div class="form-actions">
+          <button @click="handleSearch" class="btn-primary">搜索</button>
+          <button @click="handleReset" class="btn-secondary">重置</button>
+        </div>
+      </div>
+      <p v-if="searchError" class="search-error">{{ searchError }}</p>
+    </div>
+
     <div v-if="loading" class="loading">加载中...</div>
     <div v-else class="table-container">
       <table class="data-table">
@@ -188,8 +211,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { getAdminOrders, getAdminOrderById, updateOrderStatus, refundOrder } from '@/api/order'
+import { ref, onMounted, reactive } from 'vue'
+import { getAdminOrders, getAdminOrderById, updateOrderStatus, refundOrder, searchOrdersByUserInfo } from '@/api/order'
 import type { Order } from '@/types'
 
 const orders = ref<Order[]>([])
@@ -206,10 +229,28 @@ const refundReason = ref('')
 const refunding = ref(false)
 const refundError = ref('')
 
+// Search related
+const searchParams = reactive({
+  username: '',
+  phone: '',
+  realName: ''
+})
+const isSearchMode = ref(false)
+const searchError = ref('')
+
 const loadOrders = async (page = 0) => {
   loading.value = true
   try {
-    const res = await getAdminOrders(page, pageSize)
+    const res = isSearchMode.value
+      ? await searchOrdersByUserInfo({
+          username: searchParams.username || undefined,
+          phone: searchParams.phone || undefined,
+          realName: searchParams.realName || undefined,
+          page,
+          size: pageSize
+        })
+      : await getAdminOrders(page, pageSize)
+    
     orders.value = res.data.content
     totalPages.value = res.data.totalPages
     currentPage.value = res.data.number
@@ -218,6 +259,25 @@ const loadOrders = async (page = 0) => {
   } finally {
     loading.value = false
   }
+}
+
+const handleSearch = () => {
+  if (!searchParams.username && !searchParams.phone && !searchParams.realName) {
+    searchError.value = '请至少输入一个查询条件'
+    return
+  }
+  searchError.value = ''
+  isSearchMode.value = true
+  loadOrders(0)
+}
+
+const handleReset = () => {
+  searchParams.username = ''
+  searchParams.phone = ''
+  searchParams.realName = ''
+  searchError.value = ''
+  isSearchMode.value = false
+  loadOrders(0)
 }
 
 const changePage = (page: number) => {
@@ -299,6 +359,53 @@ onMounted(() => {
   background: #fff;
   border-radius: 12px;
   padding: 24px;
+}
+
+.search-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.search-form .form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search-form .form-item label {
+  font-size: 14px;
+  color: #666;
+}
+
+.search-form .form-item input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 160px;
+}
+
+.search-form .form-item input:focus {
+  outline: none;
+  border-color: #10b981;
+}
+
+.search-form .form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.search-error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 8px;
 }
 
 .loading {

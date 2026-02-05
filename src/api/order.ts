@@ -61,3 +61,25 @@ export function refundOrder(id: number, reason?: string) {
     { params }
   )
 }
+
+export interface SearchOrdersByUserParams {
+  username?: string
+  phone?: string
+  realName?: string
+  page?: number
+  size?: number
+}
+
+export function searchOrdersByUserInfo(params: SearchOrdersByUserParams) {
+  const queryParams: Record<string, string | number> = {}
+  if (params.username) queryParams.username = params.username
+  if (params.phone) queryParams.phone = params.phone
+  if (params.realName) queryParams.realName = params.realName
+  queryParams.page = params.page ?? 0
+  queryParams.size = params.size ?? 10
+
+  return request.get<any, { code: number; message: string; data: PagedResponse<Order> }>(
+    '/api/admin/orders/search',
+    { params: queryParams }
+  )
+}
