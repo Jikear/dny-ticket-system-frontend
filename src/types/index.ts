@@ -206,10 +206,11 @@ export interface TrendDataPoint {
 }
 
 export interface TrendStatistics {
-  orders: TrendDataPoint[]
-  income: TrendDataPoint[]
-  users: TrendDataPoint[]
-  entries: TrendDataPoint[]
+  dates: string[]
+  orders: number[]
+  income: number[]
+  users: number[]
+  visitors: number[]
 }
 
 export interface FlowWarning {
