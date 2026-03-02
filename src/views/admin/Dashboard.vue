@@ -129,8 +129,8 @@
               />
               <!-- Dots + tooltips -->
               <g v-for="(pt, idx) in trendChartData(metric.key)!.points" :key="'pt'+idx" class="dot-group">
-                <circle :cx="pt.x" :cy="pt.y" r="4" :fill="metric.color" />
-                <text :x="pt.x" :y="SVG_H - PAD_B + 14" class="axis-label" text-anchor="middle">{{ pt.dateLabel }}</text>
+                <circle :cx="pt.x" :cy="pt.y" :r="dotRadius(trendChartData(metric.key)!.total)" :fill="metric.color" />
+                <text v-if="idx % labelStep(trendChartData(metric.key)!.total) === 0" :x="pt.x" :y="SVG_H - PAD_B + 14" class="axis-label" text-anchor="middle">{{ pt.dateLabel }}</text>
                 <title>{{ pt.dateLabel }}: {{ metric.key === 'income' ? '¥' + pt.value.toFixed(2) : pt.value }}</title>
               </g>
             </svg>
@@ -186,7 +186,7 @@ function getPoints(key: MetricKey): TrendDataPoint[] {
 
 interface ChartPoint { x: number; y: number; value: number; dateLabel: string }
 
-function trendChartData(key: MetricKey): { points: ChartPoint[]; minVal: number; maxVal: number } | null {
+function trendChartData(key: MetricKey): { points: ChartPoint[]; minVal: number; maxVal: number; total: number } | null {
   const pts = getPoints(key)
   if (!pts.length) return null
   const values = pts.map(p => p.value)
@@ -201,7 +201,7 @@ function trendChartData(key: MetricKey): { points: ChartPoint[]; minVal: number;
     value: p.value,
     dateLabel: formatDateLabel(p.date),
   }))
-  return { points, minVal, maxVal }
+  return { points, minVal, maxVal, total: pts.length }
 }
 
 function trendLinePath(key: MetricKey): string {
@@ -220,6 +220,18 @@ function trendAreaPath(key: MetricKey): string {
   const bottom = SVG_H - PAD_B
   const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
   return `${line} L ${last.x} ${bottom} L ${first.x} ${bottom} Z`
+}
+
+function labelStep(totalPoints: number): number {
+  if (totalPoints <= 7) return 1
+  if (totalPoints <= 14) return 3
+  return 5
+}
+
+function dotRadius(totalPoints: number): number {
+  if (totalPoints <= 7) return 4
+  if (totalPoints <= 14) return 3
+  return 2
 }
 
 function yLabel(key: MetricKey, step: number): string {
