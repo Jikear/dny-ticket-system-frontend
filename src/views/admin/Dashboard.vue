@@ -171,14 +171,17 @@ const trendMetrics = [
   { key: 'orders',  label: '订单数',  icon: '📋', color: '#06b6d4' },
   { key: 'income',  label: '收入(¥)', icon: '💰', color: '#10b981' },
   { key: 'users',   label: '用户数',  icon: '👥', color: '#8b5cf6' },
-  { key: 'entries', label: '入园人数', icon: '🎫', color: '#f97316' },
+  { key: 'visitors', label: '入园人数', icon: '🎫', color: '#f97316' },
 ] as const
 
 type MetricKey = typeof trendMetrics[number]['key']
 
 function getPoints(key: MetricKey): TrendDataPoint[] {
   if (!trendData.value) return []
-  return trendData.value[key] ?? []
+  const dates = trendData.value.dates ?? []
+  const values: number[] = trendData.value[key] ?? []
+  const len = Math.min(dates.length, values.length)
+  return dates.slice(0, len).map((date, i) => ({ date, value: Number(values[i]) }))
 }
 
 interface ChartPoint { x: number; y: number; value: number; dateLabel: string }
