@@ -1,5 +1,5 @@
 import request from './request'
-import type { User, PagedResponse, Statistics, FlowWarning, OperationLog } from '@/types'
+import type { User, PagedResponse, Statistics, TrendStatistics, FlowWarning, OperationLog } from '@/types'
 
 // User Management
 export function getAdminUsers(page = 0, size = 10) {
@@ -43,6 +43,13 @@ export function createStaffUser(data: CreateStaffRequest) {
 // Statistics
 export function getStatistics() {
   return request.get<any, { code: number; message: string; data: Statistics }>('/api/admin/stats')
+}
+
+export function getTrendStatistics(period: 'week' | 'month') {
+  return request.get<any, { code: number; message: string; data: TrendStatistics }>(
+    '/api/admin/stats/trend',
+    { params: { period } }
+  )
 }
 
 export function getFlowWarning() {
