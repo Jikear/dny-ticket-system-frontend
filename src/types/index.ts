@@ -200,6 +200,18 @@ export interface Statistics {
   regionStats: StatItem[]
 }
 
+export interface TrendDataPoint {
+  date: string
+  value: number
+}
+
+export interface TrendStatistics {
+  orders: TrendDataPoint[]
+  income: TrendDataPoint[]
+  users: TrendDataPoint[]
+  entries: TrendDataPoint[]
+}
+
 export interface FlowWarning {
   date: string
   count: number
