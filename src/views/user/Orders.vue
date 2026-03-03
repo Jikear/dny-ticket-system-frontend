@@ -136,7 +136,11 @@
 
         <div v-if="selectedOrder.status === 'PENDING'" class="qrcode-section">
           <h4>入园二维码</h4>
-          <div class="qrcode-box">{{ selectedOrder.qrCode }}</div>
+          <div class="qrcode-box">
+            <img v-if="qrCodeBase64" :src="`data:image/png;base64,${qrCodeBase64}`" alt="入园二维码" class="qrcode-img" />
+            <span v-else-if="qrCodeError" class="qrcode-loading">二维码加载失败</span>
+            <span v-else class="qrcode-loading">加载中...</span>
+          </div>
           <p class="qrcode-tip">请在入园时出示此二维码</p>
         </div>
 
@@ -182,7 +186,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getMyOrders, getOrderById, cancelOrder } from '@/api/order'
+import { getMyOrders, getOrderById, cancelOrder, getOrderQrCode } from '@/api/order'
 import type { Order } from '@/types'
 
 const orders = ref<Order[]>([])
@@ -192,6 +196,8 @@ const totalPages = ref(0)
 const pageSize = 10
 
 const selectedOrder = ref<Order | null>(null)
+const qrCodeBase64 = ref('')
+const qrCodeError = ref(false)
 const cancellingOrder = ref<Order | null>(null)
 const cancelReason = ref('')
 const cancelling = ref(false)
@@ -219,6 +225,17 @@ const viewDetail = async (order: Order) => {
   try {
     const res = await getOrderById(order.id)
     selectedOrder.value = res.data
+    qrCodeBase64.value = ''
+    qrCodeError.value = false
+    if (res.data.status === 'PENDING') {
+      try {
+        const qrRes = await getOrderQrCode(order.id)
+        qrCodeBase64.value = qrRes.data.qrCodeBase64
+      } catch (e) {
+        console.error('Failed to load QR code:', e)
+        qrCodeError.value = true
+      }
+    }
   } catch (e) {
     console.error('Failed to load order detail:', e)
   }
@@ -226,6 +243,8 @@ const viewDetail = async (order: Order) => {
 
 const closeDetail = () => {
   selectedOrder.value = null
+  qrCodeBase64.value = ''
+  qrCodeError.value = false
 }
 
 const handleCancel = (order: Order) => {
@@ -589,10 +608,22 @@ onMounted(() => {
   background: #fff;
   padding: 16px;
   border-radius: 8px;
-  font-family: monospace;
-  font-size: 12px;
-  word-break: break-all;
   border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.qrcode-img {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.qrcode-loading {
+  color: #999;
+  font-size: 14px;
 }
 
 .qrcode-tip {
