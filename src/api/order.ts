@@ -26,6 +26,12 @@ export function cancelOrder(id: number, reason?: string) {
   )
 }
 
+export function getOrderQrCode(id: number) {
+  return request.get<any, { code: number; message: string; data: { qrCodeBase64: string } }>(
+    `/api/orders/${id}/qrcode`
+  )
+}
+
 export function getOrderByOrderNo(orderNo: string) {
   return request.get<any, { code: number; message: string; data: Order }>(
     '/api/orders/query',
