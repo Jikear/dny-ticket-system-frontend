@@ -280,6 +280,7 @@ const pieSlices = computed<PieSlice[]>(() => {
     const endX = cx + r * Math.cos(currentAngle + angle)
     const endY = cy + r * Math.sin(currentAngle + angle)
     const largeArc = angle > Math.PI ? 1 : 0
+    // Single item: use tiny offset so SVG arc renders a full circle (same start/end point produces no arc)
     const path = items.length === 1
       ? `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.001} ${cy - r} Z`
       : `M ${cx} ${cy} L ${startX} ${startY} A ${r} ${r} 0 ${largeArc} 1 ${endX} ${endY} Z`
