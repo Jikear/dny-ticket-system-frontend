@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { showError } from '@/utils/toast'
 
 const service = axios.create({
   baseURL: 'http://localhost:8080', // 后端地址，按需修改
@@ -23,14 +24,14 @@ service.interceptors.response.use(
     const res = response.data
     // 后端约定：code === 0 为成功
     if (res.code !== 0) {
-      // 可在这里弹出错误消息
-      console.error(res.message || '请求失败')
+      showError(res.message || '请求失败')
       return Promise.reject(res)
     }
     return res
   },
   (error) => {
-    console.error('网络错误', error)
+    const message = error.response?.data?.message || error.message || '网络错误'
+    showError(message)
     return Promise.reject(error)
   }
 )

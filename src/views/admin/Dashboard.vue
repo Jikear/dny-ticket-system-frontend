@@ -48,10 +48,22 @@
         <h3>票种销售占比</h3>
         <div class="chart-content">
           <div v-if="stats?.ticketTypeStats?.length" class="pie-chart">
-            <div v-for="(item, index) in stats.ticketTypeStats" :key="index" class="pie-item">
-              <span class="pie-color" :style="{ background: colors[index % colors.length] }"></span>
-              <span class="pie-name">{{ item.name }}</span>
-              <span class="pie-value">{{ item.value }}</span>
+            <svg viewBox="0 0 200 200" class="pie-svg">
+              <g v-for="(slice, index) in pieSlices" :key="index">
+                <path
+                  :d="slice.path"
+                  :fill="colors[index % colors.length]"
+                >
+                  <title>{{ slice.name }}: {{ slice.value }} ({{ slice.percent }}%)</title>
+                </path>
+              </g>
+            </svg>
+            <div class="pie-legend">
+              <div v-for="(item, index) in pieSlices" :key="index" class="pie-legend-item">
+                <span class="pie-color" :style="{ background: colors[index % colors.length] }"></span>
+                <span class="pie-name">{{ item.name }}</span>
+                <span class="pie-value">{{ item.percent }}%</span>
+              </div>
             </div>
           </div>
           <p v-else class="no-data">暂无数据</p>
@@ -246,6 +258,42 @@ const maxRegionValue = computed(() => {
   return Math.max(...stats.value.regionStats.map(r => r.value))
 })
 
+interface PieSlice {
+  name: string
+  value: number
+  percent: string
+  path: string
+}
+
+const pieSlices = computed<PieSlice[]>(() => {
+  const items = stats.value?.ticketTypeStats
+  if (!items?.length) return []
+  const total = items.reduce((sum, item) => sum + item.value, 0)
+  if (total === 0) return []
+  const cx = 100, cy = 100, r = 80
+  let currentAngle = -Math.PI / 2
+  return items.map(item => {
+    const ratio = item.value / total
+    const angle = ratio * Math.PI * 2
+    const startX = cx + r * Math.cos(currentAngle)
+    const startY = cy + r * Math.sin(currentAngle)
+    const endX = cx + r * Math.cos(currentAngle + angle)
+    const endY = cy + r * Math.sin(currentAngle + angle)
+    const largeArc = angle > Math.PI ? 1 : 0
+    // Single item: use tiny offset so SVG arc renders a full circle (same start/end point produces no arc)
+    const path = items.length === 1
+      ? `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.001} ${cy - r} Z`
+      : `M ${cx} ${cy} L ${startX} ${startY} A ${r} ${r} 0 ${largeArc} 1 ${endX} ${endY} Z`
+    currentAngle += angle
+    return {
+      name: item.name,
+      value: item.value,
+      percent: (ratio * 100).toFixed(1),
+      path,
+    }
+  })
+})
+
 async function loadTrend() {
   try {
     const res = await getTrendStatistics(trendPeriod.value)
@@ -413,30 +461,46 @@ onMounted(() => {
 
 .pie-chart {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 24px;
 }
 
-.pie-item {
+.pie-svg {
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.pie-legend-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .pie-color {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
 }
 
 .pie-name {
   flex: 1;
   color: #333;
+  font-size: 14px;
 }
 
 .pie-value {
   color: #666;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .bar-chart {
