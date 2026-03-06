@@ -68,6 +68,14 @@ export function refundOrder(id: number, reason?: string) {
   )
 }
 
+export function verifyOrder(qrCode: string) {
+  return request.post<any, { code: number; message: string; data: Order }>(
+    '/api/admin/orders/verify',
+    null,
+    { params: { qrCode } }
+  )
+}
+
 export interface SearchOrdersByUserParams {
   username?: string
   phone?: string
