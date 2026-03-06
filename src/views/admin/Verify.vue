@@ -11,9 +11,24 @@
           class="verify-input"
           @keyup.enter="handleVerify"
         />
+        <button @click="startScan" :disabled="scanning" class="btn-scan" title="扫描二维码">
+          📷 扫码
+        </button>
         <button @click="handleVerify" :disabled="verifying || !qrCode.trim()" class="btn-primary">
           {{ verifying ? '核销中...' : '核销' }}
         </button>
+      </div>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div v-if="scanning" class="scanner-overlay" @click.self="stopScan">
+      <div class="scanner-modal">
+        <div class="scanner-header">
+          <h3>扫描二维码</h3>
+          <button @click="stopScan" class="scanner-close">&times;</button>
+        </div>
+        <div id="qr-reader" class="scanner-view"></div>
+        <p class="scanner-tip">请将二维码对准摄像头进行扫描</p>
       </div>
     </div>
 
@@ -75,14 +90,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick, onBeforeUnmount } from 'vue'
+import { Html5Qrcode } from 'html5-qrcode'
 import { verifyOrder } from '@/api/order'
-import { showSuccess } from '@/utils/toast'
+import { showSuccess, showError } from '@/utils/toast'
 import type { Order } from '@/types'
 
 const qrCode = ref('')
 const verifying = ref(false)
 const verifyResult = ref<Order | null>(null)
+const scanning = ref(false)
+
+let html5QrCode: Html5Qrcode | null = null
 
 const handleVerify = async () => {
   if (!qrCode.value.trim() || verifying.value) return
@@ -102,10 +121,52 @@ const handleVerify = async () => {
   }
 }
 
+const startScan = async () => {
+  scanning.value = true
+  await nextTick()
+
+  try {
+    html5QrCode = new Html5Qrcode('qr-reader')
+    await html5QrCode.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      (decodedText) => {
+        qrCode.value = decodedText
+        stopScan()
+        handleVerify()
+      },
+      () => {
+        // Ignore scan failures (no QR code detected in frame)
+      }
+    )
+  } catch (err) {
+    console.error('Failed to start scanner:', err)
+    showError('无法启动摄像头，请检查设备权限或使用手动输入')
+    scanning.value = false
+  }
+}
+
+const stopScan = async () => {
+  if (html5QrCode) {
+    try {
+      await html5QrCode.stop()
+      html5QrCode.clear()
+    } catch {
+      // Ignore stop errors
+    }
+    html5QrCode = null
+  }
+  scanning.value = false
+}
+
 const resetResult = () => {
   verifyResult.value = null
   qrCode.value = ''
 }
+
+onBeforeUnmount(() => {
+  stopScan()
+})
 </script>
 
 <style scoped>
@@ -293,5 +354,86 @@ const resetResult = () => {
 
 .btn-secondary:hover {
   background: #eee;
+}
+
+.btn-scan {
+  padding: 12px 20px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btn-scan:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.btn-scan:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.scanner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.scanner-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.scanner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.scanner-header h3 {
+  margin: 0;
+  color: #1a1a2e;
+}
+
+.scanner-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.scanner-close:hover {
+  color: #333;
+}
+
+.scanner-view {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.scanner-tip {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  margin: 12px 0 0;
 }
 </style>
