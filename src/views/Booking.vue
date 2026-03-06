@@ -269,7 +269,7 @@ const handleSubmit = async () => {
     form.contactPhone = ''
     form.contactIdCard = ''
   } catch (e: any) {
-    error.value = e?.message || '预约失败，请重试'
+    error.value = e?.response?.data?.message || e?.message || '预约失败，请重试'
   } finally {
     submitting.value = false
   }

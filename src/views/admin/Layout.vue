@@ -25,6 +25,10 @@
           <span class="icon">📋</span>
           <span>订单管理</span>
         </router-link>
+        <router-link to="/admin/verify" class="nav-item" active-class="active">
+          <span class="icon">📱</span>
+          <span>入园核销</span>
+        </router-link>
         <router-link to="/admin/park" class="nav-item" active-class="active">
           <span class="icon">🏞️</span>
           <span>园区信息</span>
@@ -77,6 +81,7 @@ const pageTitle = computed(() => {
     '/admin/tickets': '票种管理',
     '/admin/slots': '时段管理',
     '/admin/orders': '订单管理',
+    '/admin/verify': '入园核销',
     '/admin/park': '园区信息',
     '/admin/activities': '活动管理',
     '/admin/announcements': '公告管理',
