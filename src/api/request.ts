@@ -2,7 +2,7 @@ import axios from 'axios'
 import { showError } from '@/utils/toast'
 
 const service = axios.create({
-  baseURL: 'http://localhost:8080', // 后端地址，按需修改
+  baseURL: 'http://117.136.8.97:8080', // 后端地址，按需修改
   timeout: 10000
 })
 
