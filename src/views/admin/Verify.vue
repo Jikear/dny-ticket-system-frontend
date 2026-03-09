@@ -129,7 +129,15 @@ const startScan = async () => {
     html5QrCode = new Html5Qrcode('qr-reader')
     await html5QrCode.start(
       { facingMode: 'environment' },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
+      {
+        fps: 10,
+        qrbox: { width: 300, height: 300 },
+        videoConstraints: {
+          facingMode: 'environment',
+          width: { min: 640, ideal: 1920 },
+          height: { min: 480, ideal: 1080 }
+        }
+      },
       (decodedText) => {
         qrCode.value = decodedText
         stopScan()
