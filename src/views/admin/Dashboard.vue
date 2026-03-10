@@ -96,9 +96,12 @@
     <div class="trend-section">
       <div class="trend-header">
         <h3>数据趋势统计</h3>
-        <div class="period-toggle">
-          <button :class="['toggle-btn', { active: trendPeriod === 'week' }]" @click="switchPeriod('week')">一周</button>
-          <button :class="['toggle-btn', { active: trendPeriod === 'month' }]" @click="switchPeriod('month')">一月</button>
+        <div class="trend-controls">
+          <input type="date" class="date-picker" v-model="trendDate" @change="loadTrend()" />
+          <div class="period-toggle">
+            <button :class="['toggle-btn', { active: trendPeriod === 'week' }]" @click="switchPeriod('week')">一周</button>
+            <button :class="['toggle-btn', { active: trendPeriod === 'month' }]" @click="switchPeriod('month')">一月</button>
+          </div>
         </div>
       </div>
       <div class="trend-grid">
@@ -163,6 +166,7 @@ const stats = ref<Statistics | null>(null)
 const flowWarning = ref<FlowWarning | null>(null)
 const trendData = ref<TrendStatistics | null>(null)
 const trendPeriod = ref<'week' | 'month'>('week')
+const trendDate = ref('')
 
 const colors = ['#10b981', '#06b6d4', '#f97316', '#ec4899', '#8b5cf6', '#14b8a6']
 
@@ -296,7 +300,7 @@ const pieSlices = computed<PieSlice[]>(() => {
 
 async function loadTrend() {
   try {
-    const res = await getTrendStatistics(trendPeriod.value)
+    const res = await getTrendStatistics(trendPeriod.value, trendDate.value || undefined)
     trendData.value = res.data
   } catch (e) {
     console.error('Failed to load trend data:', e)
@@ -566,6 +570,27 @@ onMounted(() => {
 .period-toggle {
   display: flex;
   gap: 8px;
+}
+
+.trend-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-picker {
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  background: #f5f5f5;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.date-picker:focus {
+  border-color: #10b981;
 }
 
 .toggle-btn {
