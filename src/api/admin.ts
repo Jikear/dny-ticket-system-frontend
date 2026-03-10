@@ -45,10 +45,12 @@ export function getStatistics() {
   return request.get<any, { code: number; message: string; data: Statistics }>('/api/admin/stats')
 }
 
-export function getTrendStatistics(period: 'week' | 'month') {
+export function getTrendStatistics(period: 'week' | 'month', date?: string) {
+  const params: Record<string, string> = { period }
+  if (date) params.date = date
   return request.get<any, { code: number; message: string; data: TrendStatistics }>(
     '/api/admin/stats/trend',
-    { params: { period } }
+    { params }
   )
 }
 
